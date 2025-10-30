@@ -1,7 +1,7 @@
 asyncapi: 3.0.0
 info:
   title: Operativt uppgiftslager API
-  version: 1.0.0
+  version: 1.1.0
   description: Operativt uppgiftslager för hantering av manuella uppgifter utförda av handläggare
 
 channels:
@@ -13,6 +13,10 @@ channels:
     messages:
       OperativtUppgiftslagerResponseMessage:
         $ref: '#/components/messages/OperativtUppgiftslagerResponseMessage'
+  operativt.uppgiftslager.status:
+    messages:
+      OperativtUppgiftslagerStatusMessage:
+        $ref: '#/components/messages/OperativtUppgiftslagerStatusMessage'
 operations:
   operativtUppgiftslagerRequest:
     action: receive
@@ -24,7 +28,18 @@ operations:
         location: "$message.header#/replyTo"
       channel:
         $ref: '#/channels/operativt.uppgiftslager.responses'
+  operativtUppgiftslagerStatus:
+    action: send
+    channel:
+      $ref: '#/channels/operativt.uppgiftslager.status'
+    summary: Publicerar statusuppdateringar
 components:
+  schemas:
+    Personnummer:
+      type: string
+      description: Svenskt personnummer (12 siffror med bindestreck)
+      pattern: '^\d{8}-\d{4}$'
+      example: "19990101-0123"
   messages:
     OperativtUppgiftslagerRequestMessage:
       headers:
@@ -42,11 +57,11 @@ components:
           processId:
             type: string
             description: Unikt id som identifierar processinstansen
-          personNummer:
+          personnummer:
+            $ref: '#/components/schemas/Personnummer'
+          uppgiftsBeskrivning:
             type: string
-            description: Svenskt personnummer, 12 siffror med bindestreck (YYYYMMDD-XXXX)
-            pattern: '^\d{8}-\d{4}$'
-            example: 19990101-0123
+            description: Beskrivning av vad handläggaren ska göra
       correlationId:
         $ref: "#/components/correlationIds/correlationId"
     OperativtUppgiftslagerResponseMessage:
@@ -62,18 +77,31 @@ components:
           processId:
             type: string
             description: Unikt id som identifierar processinstansen
-          personNummer:
-            type: string
-            description: Svenskt personnummer 12 siffror
-            pattern: '^\d{8}-\d{4}$'
-            example: 19990101-0123
+          personnummer:
+            $ref: '#/components/schemas/Personnummer'
           resultat:
-            type: boolean
-            description: Resultat av registrering av ny uppgift i uppgiftslagret
-            example: true
+            type: string
+            description: Utfall av uppgiften
           status:
             type: string
-            description: Status för processen
+            description: Status för uppgiften
+            enum:
+              - Avslutad
+    OperativtUppgiftslagerStatusMessage:
+      payload:
+        type: object
+        properties:
+          processId:
+            type: string
+            description: Unikt id som identifierar processinstansen
+          personnummer:
+            $ref: '#/components/schemas/Personnummer'
+          resultat:
+            type: string
+            description: Utfall av uppgiften (endast relevant om status är Avslutad)
+          status:
+            type: string
+            description: Status för uppgiften
             enum:
               - Ny
               - Tilldelad
