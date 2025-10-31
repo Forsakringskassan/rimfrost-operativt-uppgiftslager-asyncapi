@@ -11,5 +11,16 @@
 
 [86aea](https://github.com/Forsakringskassan/rimfrost-operativt-uppgiftslager-asyncapi/commit/86aeab985743c60) Tomas Bjerre *2025-10-28 13:10:23*
 
+## 1.1.0 (2025-10-31)
+
+### Added
+
+- New channel operativt.uppgiftslager.status
+
+### Changed
+
+- Modified payload for operativt.uppgiftslager.requests & operativt.uppgiftslager.responses
+
+
 
 
