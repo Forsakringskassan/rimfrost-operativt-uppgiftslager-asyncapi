@@ -1,3 +1,24 @@
+## 0.1.0 (2025-11-06)
+
+### Bug Fixes
+
+-  updated for status topic ([6e4a5](https://github.com/Forsakringskassan/rimfrost-operativt-uppgiftslager-asyncapi/commit/6e4a5c63faeb972) Ulf Slunga)  
+-  moving asyncapi-spec from rimfrost-operativt-uppgiftslager-api ([7291c](https://github.com/Forsakringskassan/rimfrost-operativt-uppgiftslager-asyncapi/commit/7291c88bf41fede) Ulf Slunga)  
+
+### Other changes
+
+**Update group in gradle properties**
+
+
+[2df02](https://github.com/Forsakringskassan/rimfrost-operativt-uppgiftslager-asyncapi/commit/2df0273e87a20da) Nils Elveros *2025-11-06 12:53:39*
+
+**Beskrivning personnummer**
+
+* Co-authored-by: davidsoderberg-ductus &lt;david.soderberg@ductus.se&gt; 
+
+[356e0](https://github.com/Forsakringskassan/rimfrost-operativt-uppgiftslager-asyncapi/commit/356e03c352d5572) Ulf Slunga *2025-10-30 11:43:12*
+
+
 ## 0.0.1 (2025-10-29)
 
 ### Bug Fixes
