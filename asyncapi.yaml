@@ -17,8 +17,9 @@ channels:
     messages:
       OperativtUppgiftslagerStatusMessage:
         $ref: '#/components/messages/OperativtUppgiftslagerStatusMessage'
+
 operations:
-  operativtUppgiftslagerRequest:
+  onOperativtUppgiftslagerRequest:
     action: receive
     channel:
       $ref: '#/channels/operativt.uppgiftslager.requests'
@@ -33,62 +34,36 @@ operations:
     channel:
       $ref: '#/channels/operativt.uppgiftslager.status'
     summary: Publicerar statusuppdateringar
+
 components:
-  schemas:
-    Personnummer:
-      type: string
-      description: Svenskt personnummer (12 siffror med bindestreck)
-      pattern: '^\d{8}-\d{4}$'
-      example: "19990101-0123"
   messages:
     OperativtUppgiftslagerRequestMessage:
       headers:
-        type: object
-        properties:
-          replyTo:
-            type: string
-            description: Topic där response ska skickas
-          correlationId:
-            type: string
-            description: Unikt id som kopplar ihop request & response
+       $ref: "#/components/schemas/OperativtUppgiftslagerRequestMessageHeaders"
       payload:
-        type: object
-        properties:
-          processId:
-            type: string
-            description: Unikt id som identifierar processinstansen
-          personnummer:
-            $ref: '#/components/schemas/Personnummer'
-          uppgiftsBeskrivning:
-            type: string
-            description: Beskrivning av vad handläggaren ska göra
-      correlationId:
-        $ref: "#/components/correlationIds/correlationId"
+        title: OperativtUppgiftslagerRequestMessagePayload
+        allOf:
+          - $ref: "kogito-cloudevent.yaml#/components/schemas/KogitoCloudEvent"
+          - type: object
+            properties:
+              data:
+                $ref: "#/components/schemas/OperativtUppgiftslagerRequestMessageData"
+
     OperativtUppgiftslagerResponseMessage:
       headers:
-        type: object
-        properties:
-          correlationId:
-            type: string
-            description: Unikt id som kopplar ihop request & response
+        $ref: "#/components/schemas/OperativtUppgiftslagerResponseMessageHeaders"
       payload:
-        type: object
-        properties:
-          processId:
-            type: string
-            description: Unikt id som identifierar processinstansen
-          personnummer:
-            $ref: '#/components/schemas/Personnummer'
-          resultat:
-            type: string
-            description: Utfall av uppgiften
-          status:
-            type: string
-            description: Status för uppgiften
-            enum:
-              - Avslutad
+        title: OperativtUppgiftslagerResponseMessagePayload
+        allOf:
+          - $ref: "kogito-cloudevent.yaml#/components/schemas/KogitoCloudEvent"
+          - type: object
+            properties:
+              data:
+                $ref: "#/components/schemas/OperativtUppgiftslagerResponseMessageData"
+
     OperativtUppgiftslagerStatusMessage:
       payload:
+        title: OperativtUppgiftslagerStatusMessagePayload
         type: object
         properties:
           processId:
@@ -100,12 +75,66 @@ components:
             type: string
             description: Utfall av uppgiften (endast relevant om status är Avslutad)
           status:
+            title: status
             type: string
             description: Status för uppgiften
             enum:
               - Ny
               - Tilldelad
               - Avslutad
-  correlationIds:
-    correlationId:
-      location: '$message.header#/requestId'
+
+  schemas:
+    OperativtUppgiftslagerRequestMessageHeaders:
+      type: object
+      properties:
+        replyTo:
+          type: string
+          description: Topic där response ska skickas
+        correlationId:
+          type: string
+          description: Unikt id som kopplar ihop request & response
+    
+    OperativtUppgiftslagerRequestMessageData:
+      type: object
+      properties:
+        processId:
+          type: string
+          description: Unikt id som identifierar processinstansen
+        personNummer:
+          $ref: '#/components/schemas/Personnummer'
+        uppgiftsBeskrivning:
+          type: string
+          description: Beskrivning av vad handläggaren ska göra
+
+    OperativtUppgiftslagerResponseMessageHeaders:
+      type: object
+      properties:
+        correlationId:
+          type: string
+          description: Unikt id som kopplar ihop request & response
+
+    OperativtUppgiftslagerResponseMessageData:
+      type: object
+      properties:
+        processId:
+          type: string
+          description: Unikt id som identifierar processinstansen
+        personnummer:
+          $ref: '#/components/schemas/Personnummer'
+        resultat:
+          type: string
+          description: Utfall av uppgiften
+        status:
+          title: status
+          type: string
+          description: Status för uppgiften
+          enum:
+            - Ny
+            - Tilldelad
+            - Avslutad
+
+    Personnummer:
+      type: string
+      description: Svenskt personnummer (12 siffror med bindestreck)
+      pattern: '^\d{8}-\d{4}$'
+      example: "19990101-0123"
