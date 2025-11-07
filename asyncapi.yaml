@@ -121,9 +121,16 @@ components:
           description: Unikt id som identifierar processinstansen
         personnummer:
           $ref: '#/components/schemas/Personnummer'
-        resultat:
+        beslutUtfall:
+          title: beslutUtfall
           type: string
-          description: Utfall av uppgiften
+          description: Beslutat utfall av uppgiften
+          enum:
+            - Beviljat
+            - Avslag
+            - DelvisBeviljande
+            - Avvisning
+            - Avskrivning
         status:
           title: status
           type: string
