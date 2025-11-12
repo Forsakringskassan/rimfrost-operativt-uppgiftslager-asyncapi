@@ -13,7 +13,11 @@ channels:
     messages:
       OperativtUppgiftslagerResponseMessage:
         $ref: '#/components/messages/OperativtUppgiftslagerResponseMessage'
-  operativt.uppgiftslager.status:
+  operativt.uppgiftslager.status.control:
+    messages:
+      OperativtUppgiftslagerStatusMessage:
+        $ref: '#/components/messages/OperativtUppgiftslagerStatusMessage'
+  operativt.uppgiftslager.status.notification:
     messages:
       OperativtUppgiftslagerStatusMessage:
         $ref: '#/components/messages/OperativtUppgiftslagerStatusMessage'
@@ -29,10 +33,15 @@ operations:
         location: "$message.header#/replyTo"
       channel:
         $ref: '#/channels/operativt.uppgiftslager.responses'
-  operativtUppgiftslagerStatus:
+  operativtUppgiftslagerStatusControl:
+    action: receive
+    channel:
+      $ref: '#/channels/operativt.uppgiftslager.status.control'
+    summary: Hanterar statusuppdateringar
+  operativtUppgiftslagerStatusNotification:
     action: send
     channel:
-      $ref: '#/channels/operativt.uppgiftslager.status'
+      $ref: '#/channels/operativt.uppgiftslager.status.notification'
     summary: Publicerar statusuppdateringar
 
 components:
