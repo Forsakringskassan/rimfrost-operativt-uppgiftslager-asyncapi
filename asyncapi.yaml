@@ -9,6 +9,10 @@ channels:
     messages:
       OperativtUppgiftslagerRequestMessage:
         $ref: '#/components/messages/OperativtUppgiftslagerRequestMessage'
+  operativt.uppgiftslager.responses:
+    messages:
+      OperativtUppgiftslagerResponseMessage:
+        $ref: '#/components/messages/OperativtUppgiftslagerResponseMessage'
   operativt.uppgiftslager.status:
     messages:
       OperativtUppgiftslagerStatusMessage:
@@ -19,6 +23,12 @@ operations:
     action: receive
     channel:
       $ref: '#/channels/operativt.uppgiftslager.requests'
+    reply:
+      address:
+        description: Topic där response ska skickas
+        location: "$message.header#/replyTo"
+      channel:
+        $ref: '#/channels/operativt.uppgiftslager.responses'
   operativtUppgiftslagerStatus:
     action: send
     channel:
@@ -33,10 +43,22 @@ components:
         allOf:
           - $ref: "kogito-cloudevent.yaml#/components/schemas/KogitoCloudEvent"
           - type: object
+            title: OperativtUppgiftslagerRequestMessageData
             properties:
               data:
                 $ref: "#/components/schemas/OperativtUppgiftslagerRequestMessageData"
-
+    OperativtUppgiftslagerResponseMessage:
+      headers:
+        $ref: "#/components/schemas/OperativtUppgiftslagerResponseMessageHeaders"
+      payload:
+        title: OperativtUppgiftslagerResponseMessagePayload
+        allOf:
+          - $ref: "kogito-cloudevent.yaml#/components/schemas/KogitoCloudEvent"
+          - type: object
+            title: OperativtUppgiftslagerResponseMessageData
+            properties:
+              data:
+                $ref: "#/components/schemas/OperativtUppgiftslagerResponseMessageData"
     OperativtUppgiftslagerStatusMessage:
       payload:
         title: OperativtUppgiftslagerStatusMessagePayload
@@ -69,6 +91,7 @@ components:
     
     OperativtUppgiftslagerRequestMessageData:
       type: object
+      title: OperativtUppgiftslagerRequestMessageData
       required:
         - version
         - uppgiftspec_id
@@ -95,6 +118,20 @@ components:
           type: string
           description: Unikt id som identifierar processinstansen
 
+    OperativtUppgiftslagerResponseMessageHeaders:
+      type: object
+      properties:
+        correlationId:
+          type: string
+          description: Unikt id som kopplar ihop request & response
+
+    OperativtUppgiftslagerResponseMessageData:
+      type: object
+      title: OperativtUppgiftslagerResponseMessageData
+      properties:
+        uppgift_id:
+          type: string
+          description: Unikt ID som identifierar instansen av uppgifts-objektet
     Personnummer:
       type: string
       description: Svenskt personnummer (12 siffror med bindestreck)
