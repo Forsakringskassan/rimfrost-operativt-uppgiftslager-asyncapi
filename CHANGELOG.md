@@ -1,3 +1,10 @@
+## 0.2.1 (2025-11-12)
+
+### Bug Fixes
+
+-  lägger tillbaka en response på uppgiftslager request, som endast innehåller id för den skapade uppgiften ([2236e](https://github.com/Forsakringskassan/rimfrost-operativt-uppgiftslager-asyncapi/commit/2236e8c6e0432fc) Ulf Slunga)  
+-  uppdaterad med info från modellen. Tagit bort responsen för uppgiftslager request ([d5bb2](https://github.com/Forsakringskassan/rimfrost-operativt-uppgiftslager-asyncapi/commit/d5bb268d99838ed) Ulf Slunga)  
+
 ## 0.2.0 (2025-11-07)
 
 ## 0.1.0 (2025-11-06)
