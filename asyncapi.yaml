@@ -9,10 +9,6 @@ channels:
     messages:
       OperativtUppgiftslagerRequestMessage:
         $ref: '#/components/messages/OperativtUppgiftslagerRequestMessage'
-  operativt.uppgiftslager.responses:
-    messages:
-      OperativtUppgiftslagerResponseMessage:
-        $ref: '#/components/messages/OperativtUppgiftslagerResponseMessage'
   operativt.uppgiftslager.status:
     messages:
       OperativtUppgiftslagerStatusMessage:
@@ -23,12 +19,6 @@ operations:
     action: receive
     channel:
       $ref: '#/channels/operativt.uppgiftslager.requests'
-    reply:
-      address:
-        description: Topic där response ska skickas
-        location: "$message.header#/replyTo"
-      channel:
-        $ref: '#/channels/operativt.uppgiftslager.responses'
   operativtUppgiftslagerStatus:
     action: send
     channel:
@@ -38,8 +28,6 @@ operations:
 components:
   messages:
     OperativtUppgiftslagerRequestMessage:
-      headers:
-       $ref: "#/components/schemas/OperativtUppgiftslagerRequestMessageHeaders"
       payload:
         title: OperativtUppgiftslagerRequestMessagePayload
         allOf:
@@ -49,24 +37,18 @@ components:
               data:
                 $ref: "#/components/schemas/OperativtUppgiftslagerRequestMessageData"
 
-    OperativtUppgiftslagerResponseMessage:
-      headers:
-        $ref: "#/components/schemas/OperativtUppgiftslagerResponseMessageHeaders"
-      payload:
-        title: OperativtUppgiftslagerResponseMessagePayload
-        allOf:
-          - $ref: "kogito-cloudevent.yaml#/components/schemas/KogitoCloudEvent"
-          - type: object
-            properties:
-              data:
-                $ref: "#/components/schemas/OperativtUppgiftslagerResponseMessageData"
-
     OperativtUppgiftslagerStatusMessage:
       payload:
         title: OperativtUppgiftslagerStatusMessagePayload
         type: object
+        required:
+          - uppgift_id
+          - process_id
         properties:
-          processId:
+          uppgift_id:
+            type: string
+            description: Unikt ID som identifierar instansen av uppgifts-objektet
+          process_id:
             type: string
             description: Unikt id som identifierar processinstansen
           personnummer:
@@ -84,64 +66,93 @@ components:
               - Avslutad
 
   schemas:
-    OperativtUppgiftslagerRequestMessageHeaders:
-      type: object
-      properties:
-        replyTo:
-          type: string
-          description: Topic där response ska skickas
-        correlationId:
-          type: string
-          description: Unikt id som kopplar ihop request & response
     
     OperativtUppgiftslagerRequestMessageData:
       type: object
+      required:
+        - version
+        - uppgiftspec_id
+        - aktivitet
+        - personnummer
+        - frontend_gui_url
+        - process_id
       properties:
-        processId:
+        version:
           type: string
-          description: Unikt id som identifierar processinstansen
-        personNummer:
-          $ref: '#/components/schemas/Personnummer'
-        uppgiftsBeskrivning:
+          description: Uppgiftens version
+        uppgiftspec_id:
           type: string
-          description: Beskrivning av vad handläggaren ska göra
-
-    OperativtUppgiftslagerResponseMessageHeaders:
-      type: object
-      properties:
-        correlationId:
+          description: Unikt ID som identifierar uppgiftens specifikation
+        aktivitet:
           type: string
-          description: Unikt id som kopplar ihop request & response
-
-    OperativtUppgiftslagerResponseMessageData:
-      type: object
-      properties:
-        processId:
-          type: string
-          description: Unikt id som identifierar processinstansen
+          description: Arbetsbeskrivning för uppgiften
         personnummer:
           $ref: '#/components/schemas/Personnummer'
-        beslutUtfall:
-          title: beslutUtfall
+        frontend_gui_url:
           type: string
-          description: Beslutat utfall av uppgiften
-          enum:
-            - Beviljat
-            - Avslag
-            - DelvisBeviljande
-            - Avvisning
-            - Avskrivning
-        status:
-          title: status
+          description: URL för grafiska användargränssnittet som frontend behöver för att visa uppgiften korrekt
+        process_id:
           type: string
-          description: Status för uppgiften
-          enum:
-            - Ny
-            - Tilldelad
-            - Avslutad
+          description: Unikt id som identifierar processinstansen
 
     Personnummer:
       type: string
       description: Svenskt personnummer (12 siffror med bindestreck)
       pattern: '^\d{8}-\d{4}$'
       example: "19990101-0123"
+
+    Uppgift:
+      type: object
+      title: Uppgift
+      required:
+        - uppgift_id
+        - version
+        - uppgiftspec_id
+        - status
+        - aktivitet
+        - personnummer
+      properties:
+        uppgift_id:
+          type: string
+          description: Unikt ID som identifierar instansen av uppgifts-objektet
+        version:
+          type: string
+          description: Uppgiftens version
+        uppgiftspec_id:
+          type: string
+          description: Unikt ID som identifierar uppgiftens specifikation
+        skapad:
+          type: string
+          description: DateTime av när uppgiften skapades i ISO 8601 format
+        utforar_id:
+          type: string
+          description: Unikt ID för utföraren
+        planerad_till:
+          type: string
+          description: DateTime av tidpunkten som uppgiften är planerad att vara färdig i ISO 8601 format
+        utford:
+          type: string
+          description: DateTime av tidpunkten som uppgiften blev färdig i ISO 8601 format
+        status:
+          type: string
+          description: Uppgiftens status
+        aktivitet:
+          type: string
+          description: Arbetsbeskrivning för uppgiften
+        personnummer:
+          $ref: '#/components/schemas/Personnummer'
+        underlag:
+          type: array
+          items:
+            $ref: '#/components/schemas/Underlag'
+
+    Underlag:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: Unikt id för Underlaget
+      additionalProperties: true
+      description: Underlag i valfritt format. Backend äger strukturen
