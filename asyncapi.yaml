@@ -43,6 +43,11 @@ operations:
     channel:
       $ref: '#/channels/operativt.uppgiftslager.status.notification'
     summary: Publicerar statusuppdateringar
+  operativtUppgiftslagerStatusUpdate:
+    action: receive
+    channel:
+      $ref: '#/channels/operativt.uppgiftslager.status.notification'
+    summary: Konsumerar statusuppdateringar
 
 components:
   messages:
@@ -75,6 +80,7 @@ components:
         required:
           - uppgift_id
           - process_id
+          - status
         properties:
           uppgift_id:
             type: string
