@@ -64,7 +64,6 @@ components:
         type: object
         required:
           - uppgift_id
-          - regeltyp
           - status
         properties:
           uppgift_id:
@@ -93,7 +92,7 @@ components:
           description: Regelns version
         kundbehovsflode_id:
           type: string
-          description: Unikt ID som identifierar kundebehovsflödet
+          description: Unikt ID som identifierar kundbehovsflödet
         regeltyp:
           type: string
           description: Vilken regel uppgiften avser
@@ -114,4 +113,4 @@ components:
           description: Unikt ID som identifierar instansen av uppgifts-objektet
         kundbehovsflode_id:
           type: string
-          description: Unikt ID som identifierar kundebehovsflödet
+          description: Unikt ID som identifierar kundbehovsflödet
