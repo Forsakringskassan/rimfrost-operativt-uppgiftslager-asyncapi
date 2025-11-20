@@ -1,3 +1,17 @@
+## 0.3.1 (2025-11-20)
+
+### Bug Fixes
+
+-  remove cloudevent and add kundflodeid ([a234c](https://github.com/Forsakringskassan/rimfrost-service-oul-asyncapi/commit/a234c485cd84829) Nils Elveros)  
+
+### Other changes
+
+**Fixed comments**
+
+
+[5b8fd](https://github.com/Forsakringskassan/rimfrost-service-oul-asyncapi/commit/5b8fdf914ddba26) Nils Elveros *2025-11-20 09:50:12*
+
+
 ## 0.3.0 (2025-11-13)
 
 ## 0.2.1 (2025-11-12)
