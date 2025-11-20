@@ -1,6 +1,6 @@
 asyncapi: 3.0.0
 info:
-  title: Operativt uppgiftslager API
+  title: Operativt uppgiftslager Async API
   version: 1.1.0
   description: Operativt uppgiftslager för hantering av manuella uppgifter utförda av handläggare
 
@@ -48,45 +48,27 @@ components:
   messages:
     OperativtUppgiftslagerRequestMessage:
       payload:
-        title: OperativtUppgiftslagerRequestMessagePayload
-        allOf:
-          - $ref: "kogito-cloudevent.yaml#/components/schemas/KogitoCloudEvent"
-          - type: object
-            title: OperativtUppgiftslagerRequestMessageData
-            properties:
-              data:
-                $ref: "#/components/schemas/OperativtUppgiftslagerRequestMessageData"
+        title: OperativtUppgiftslagerRequestMessage
+        $ref: "#/components/schemas/OperativtUppgiftslagerRequestMessage"
+
     OperativtUppgiftslagerResponseMessage:
       headers:
         $ref: "#/components/schemas/OperativtUppgiftslagerResponseMessageHeaders"
       payload:
-        title: OperativtUppgiftslagerResponseMessagePayload
-        allOf:
-          - $ref: "kogito-cloudevent.yaml#/components/schemas/KogitoCloudEvent"
-          - type: object
-            title: OperativtUppgiftslagerResponseMessageData
-            properties:
-              data:
-                $ref: "#/components/schemas/OperativtUppgiftslagerResponseMessageData"
+        title: OperativtUppgiftslagerResponseMessage
+        $ref: "#/components/schemas/OperativtUppgiftslagerResponseMessage"
+
     OperativtUppgiftslagerStatusMessage:
       payload:
-        title: OperativtUppgiftslagerStatusMessagePayload
+        title: OperativtUppgiftslagerStatusMessage
         type: object
         required:
           - uppgift_id
-          - process_id
+          - status
         properties:
           uppgift_id:
             type: string
             description: Unikt ID som identifierar instansen av uppgifts-objektet
-          process_id:
-            type: string
-            description: Unikt id som identifierar processinstansen
-          personnummer:
-            $ref: '#/components/schemas/Personnummer'
-          resultat:
-            type: string
-            description: Utfall av uppgiften (endast relevant om status är Avslutad)
           status:
             title: status
             type: string
@@ -97,35 +79,23 @@ components:
               - Avslutad
 
   schemas:
-    
-    OperativtUppgiftslagerRequestMessageData:
+    OperativtUppgiftslagerRequestMessage:
       type: object
-      title: OperativtUppgiftslagerRequestMessageData
+      title: OperativtUppgiftslagerRequestMessage
       required:
         - version
-        - uppgiftspec_id
-        - aktivitet
-        - personnummer
-        - frontend_gui_url
-        - process_id
+        - kundbehovsflode_id
+        - regeltyp
       properties:
         version:
           type: string
-          description: Uppgiftens version
-        uppgiftspec_id:
+          description: Regelns version
+        kundbehovsflode_id:
           type: string
-          description: Unikt ID som identifierar uppgiftens specifikation
-        aktivitet:
+          description: Unikt ID som identifierar kundbehovsflödet
+        regeltyp:
           type: string
-          description: Arbetsbeskrivning för uppgiften
-        personnummer:
-          $ref: '#/components/schemas/Personnummer'
-        frontend_gui_url:
-          type: string
-          description: URL för grafiska användargränssnittet som frontend behöver för att visa uppgiften korrekt
-        process_id:
-          type: string
-          description: Unikt id som identifierar processinstansen
+          description: Vilken regel uppgiften avser
 
     OperativtUppgiftslagerResponseMessageHeaders:
       type: object
@@ -134,71 +104,13 @@ components:
           type: string
           description: Unikt id som kopplar ihop request & response
 
-    OperativtUppgiftslagerResponseMessageData:
+    OperativtUppgiftslagerResponseMessage:
       type: object
-      title: OperativtUppgiftslagerResponseMessageData
+      title: OperativtUppgiftslagerResponseMessage
       properties:
         uppgift_id:
           type: string
           description: Unikt ID som identifierar instansen av uppgifts-objektet
-    Personnummer:
-      type: string
-      description: Svenskt personnummer (12 siffror med bindestreck)
-      pattern: '^\d{8}-\d{4}$'
-      example: "19990101-0123"
-
-    Uppgift:
-      type: object
-      title: Uppgift
-      required:
-        - uppgift_id
-        - version
-        - uppgiftspec_id
-        - status
-        - aktivitet
-        - personnummer
-      properties:
-        uppgift_id:
+        kundbehovsflode_id:
           type: string
-          description: Unikt ID som identifierar instansen av uppgifts-objektet
-        version:
-          type: string
-          description: Uppgiftens version
-        uppgiftspec_id:
-          type: string
-          description: Unikt ID som identifierar uppgiftens specifikation
-        skapad:
-          type: string
-          description: DateTime av när uppgiften skapades i ISO 8601 format
-        utforar_id:
-          type: string
-          description: Unikt ID för utföraren
-        planerad_till:
-          type: string
-          description: DateTime av tidpunkten som uppgiften är planerad att vara färdig i ISO 8601 format
-        utford:
-          type: string
-          description: DateTime av tidpunkten som uppgiften blev färdig i ISO 8601 format
-        status:
-          type: string
-          description: Uppgiftens status
-        aktivitet:
-          type: string
-          description: Arbetsbeskrivning för uppgiften
-        personnummer:
-          $ref: '#/components/schemas/Personnummer'
-        underlag:
-          type: array
-          items:
-            $ref: '#/components/schemas/Underlag'
-
-    Underlag:
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: string
-          description: Unikt id för Underlaget
-      additionalProperties: true
-      description: Underlag i valfritt format. Backend äger strukturen
+          description: Unikt ID som identifierar kundbehovsflödet
